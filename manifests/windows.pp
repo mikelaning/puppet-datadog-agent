@@ -1,4 +1,4 @@
-class datadog_agent_windows::windows (
+class datadog_agent::windows (
   $baseurl = "https://s3.amazonaws.com/ddagent-windows-stable/ddagent-cli-${datadog_agent_windows::agentversion}.msi") {
   validate_string($baseurl)
 
@@ -16,18 +16,18 @@ class datadog_agent_windows::windows (
     notify   => Package['datadog-agent-windows'],
   }
 
-  package { 'datadog-agent-windows':
-    ensure          => "${datadog_agent_windows::agentversion}.0",
+  package { 'datadog-agent':
+    ensure          => "${datadog_agent::agentversion}.0",
     source          => "C:/datadoginstaller/ddagent-cli-${datadog_agent_windows::agentversion}.msi",
     install_options => [{
-        'APIKEY' => "${datadog_agent_windows::api_key}",
+        'APIKEY' => "${datadog_agent::api_key}",
       }
       ],
   }
 
   service { 'DatadogAgent':
-    ensure  => $::datadog_agent_windows::service_ensure,
-    enable  => $::datadog_agent_windows::service_enable,
-    require => Package['datadog-agent-windows'],
+    ensure  => $::datadog_agent::service_ensure,
+    enable  => $::datadog_agent::service_enable,
+    require => Package['datadog-agent'],
   }
 }
