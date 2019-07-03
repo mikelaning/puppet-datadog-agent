@@ -413,6 +413,8 @@ class datadog_agent(
   }
 
   include datadog_agent::params
+  
+  
   case upcase($log_level) {
     'CRITICAL': { $_loglevel = 'CRITICAL' }
     'DEBUG':    { $_loglevel = 'DEBUG' }
@@ -431,53 +433,8 @@ class datadog_agent(
   }
 
   case $::operatingsystem {
-    'Ubuntu','Debian' : {
-      if $agent5_enable {
-        class { 'datadog_agent::ubuntu::agent5':
-          agent_version         => $agent_version,
-          service_ensure        => $service_ensure,
-          service_enable        => $service_enable,
-          service_provider      => $service_provider,
-          location              => $agent5_repo_uri,
-          release               => $apt_release,
-          skip_apt_key_trusting => $skip_apt_key_trusting,
-          apt_keyserver         => $_apt_keyserver,
-        }
-      } else {
-        class { 'datadog_agent::ubuntu::agent6':
-          agent_version         => $agent_version,
-          service_ensure        => $service_ensure,
-          service_enable        => $service_enable,
-          service_provider      => $service_provider,
-          location              => $agent6_repo_uri,
-          release               => $apt_release,
-          skip_apt_key_trusting => $skip_apt_key_trusting,
-          apt_keyserver         => $_apt_keyserver,
-        }
-      }
-    }
-    'RedHat','CentOS','Fedora','Amazon','Scientific' : {
-      if $agent5_enable {
-        class { 'datadog_agent::redhat::agent5':
-          baseurl          => $agent5_repo_uri,
-          manage_repo      => $manage_repo,
-          agent_version    => $agent_version,
-          service_ensure   => $service_ensure,
-          service_enable   => $service_enable,
-          service_provider => $service_provider,
-        }
-      } else {
-        class { 'datadog_agent::redhat::agent6':
-          baseurl          => $agent6_repo_uri,
-          manage_repo      => $manage_repo,
-          agent_version    => $agent_version,
-          service_ensure   => $service_ensure,
-          service_enable   => $service_enable,
-          service_provider => $service_provider,
-        }
-      }
-    }
-    default: { fail("Class[datadog_agent]: Unsupported operatingsystem: ${::operatingsystem}") }
+    'windows' : { include datadog_agent::windows }
+    default   : { fail("Class[datadog_agent]: Unsupported operatingsystem: ${::operatingsystem}") }
   }
 
   if ($dd_groups) {
@@ -487,13 +444,20 @@ class datadog_agent(
     }
   }
 
+  if ($extra_template != '') {
+    $agent_conf_content = template('datadog_agent/datadog.conf.erb', $extra_template)
+  } else {
+    $agent_conf_content = template('datadog_agent/datadog.conf.erb')
+  }
+  
   # required by reports even in agent5 scenario
-  file { '/etc/datadog-agent':
-    ensure  => directory,
-    owner   => $dd_user,
-    group   => $dd_group,
-    mode    => '0755',
+  file  { 'c:\programdata\Datadog\datadog.conf':
+    ensure  => file,
+    content => $agent_conf_content,
+    owner   => 'Administrator',
+    group   => 'Administrators',
     require => Package[$datadog_agent::params::package_name],
+    notify  => Service[$datadog_agent::params::service_name],
   }
 
   if $agent5_enable {
