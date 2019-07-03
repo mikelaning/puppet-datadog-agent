@@ -1,4 +1,4 @@
-Puppet & Datadog
+Puppet & Datadog - Forked for Windows
 ================
 
 [![Build Status](https://travis-ci.com/DataDog/puppet-datadog-agent.svg?branch=master)](https://travis-ci.com/DataDog/puppet-datadog-agent)
