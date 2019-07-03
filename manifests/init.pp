@@ -450,8 +450,7 @@ class datadog_agent(
     $agent_conf_content = template('datadog_agent/datadog.conf.erb')
   }
   
-  # required by reports even in agent5 scenario
-  file  { 'c:\programdata\Datadog\datadog.conf':
+  file  { 'c:\programdata\Datadog\datadog.yaml':
     ensure  => file,
     content => $agent_conf_content,
     owner   => 'Administrator',
@@ -460,158 +459,65 @@ class datadog_agent(
     notify  => Service[$datadog_agent::params::service_name],
   }
 
-  if $agent5_enable {
-
-    file { '/etc/dd-agent':
-      ensure  => directory,
-      owner   => $dd_user,
-      group   => $dd_group,
-      mode    => '0755',
-      require => Package[$datadog_agent::params::package_name],
-    }
-
-    file { $conf_dir:
-      ensure  => directory,
-      purge   => $conf_dir_purge,
-      recurse => true,
-      force   => $conf_dir_purge,
-      owner   => $dd_user,
-      group   => $dd_group,
-      notify  => Service[$datadog_agent::params::service_name]
-    }
-
-    concat {'/etc/dd-agent/datadog.conf':
-      owner   => $dd_user,
-      group   => $dd_group,
-      mode    => '0640',
-      notify  => Service[$datadog_agent::params::service_name],
-      require => File['/etc/dd-agent'],
-    }
-
-    if ($dd_url == '') {
-      $_dd_url = 'https://app.datadoghq.com'
-    } else {
-      $_dd_url = $dd_url
-    }
-    concat::fragment{ 'datadog header':
-      target  => '/etc/dd-agent/datadog.conf',
-      content => template('datadog_agent/datadog_header.conf.erb'),
-      order   => '01',
-    }
-
-    concat::fragment{ 'datadog tags':
-      target  => '/etc/dd-agent/datadog.conf',
-      content => 'tags: ',
-      order   => '02',
-    }
-
-    datadog_agent::tag5{$local_tags: }
-    datadog_agent::tag5{$facts_to_tags:
-      lookup_fact => true,
-    }
-
-    concat::fragment{ 'datadog footer':
-      target  => '/etc/dd-agent/datadog.conf',
-      content => template('datadog_agent/datadog_footer.conf.erb'),
-      order   => '05',
-    }
-
-    if ($extra_template != '') {
-      concat::fragment{ 'datadog extra_template footer':
-        target  => '/etc/dd-agent/datadog.conf',
-        content => template($extra_template),
-        order   => '06',
-      }
-    }
-
-    if ($apm_enabled == true) and ($apm_env != 'none') or $apm_analyzed_spans {
-      concat::fragment{ 'datadog apm footer':
-        target  => '/etc/dd-agent/datadog.conf',
-        content => template('datadog_agent/datadog_apm_footer.conf.erb'),
-        order   => '07',
-      }
-    }
-
-    if ($process_enabled == true) {
-      concat::fragment{ 'datadog process agent footer':
-        target  => '/etc/dd-agent/datadog.conf',
-        content => template('datadog_agent/datadog_process_footer.conf.erb'),
-        order   => '08',
-      }
-    }
-  } else {
-    # notify of broken params on agent6
-    if !empty($proxy_host) {
-        notify { 'Setting proxy_host will have no effect on agent6 please use agent6_extra_options to set your proxy': }
-    }
-    if !empty($proxy_port) {
-        notify { 'Setting proxy_port will have no effect on agent6 please use agent6_extra_options to set your proxy': }
-    }
-    if !empty($proxy_user) {
-        notify { 'Setting proxy_user will have no effect on agent6 please use agent6_extra_options to set your proxy': }
-    }
-    if !empty($proxy_password) {
-        notify { 'Setting proxy_password will have no effect on agent6 please use agent6_extra_options to set your proxy': }
-    }
-
+  
     # lint:ignore:quoted_booleans
-    $process_enabled_str = $process_enabled ? { true => 'true' , default => 'disabled' }
-    # lint:endignore
-    $base_extra_config = {
-        'apm_config' => {
-          'enabled'               => $apm_enabled,
-          'env'                   => $apm_env,
-          'apm_non_local_traffic' => $apm_non_local_traffic
-        },
-        'process_config' => {
-          'enabled' => $process_enabled_str,
-          'scrub_args' => $scrub_args,
-          'custom_sensitive_words' => $custom_sensitive_words,
-        },
-        'logs_enabled' => $logs_enabled,
-        'logs_config' => {
-          'container_collect_all' => $container_collect_all,
-        },
-    }
+  $process_enabled_str = $process_enabled ? { true => 'true' , default => 'disabled' }
+  # lint:endignore
+  $base_extra_config = {
+      'apm_config' => {
+        'enabled'               => $apm_enabled,
+        'env'                   => $apm_env,
+        'apm_non_local_traffic' => $apm_non_local_traffic
+      },
+      'process_config' => {
+        'enabled' => $process_enabled_str,
+        'scrub_args' => $scrub_args,
+        'custom_sensitive_words' => $custom_sensitive_words,
+      },
+      'logs_enabled' => $logs_enabled,
+      'logs_config' => {
+        'container_collect_all' => $container_collect_all,
+      },
+  }
 
-    if $host != '' {
-        $host_config = {
-          'hostname' => $host,
-        }
-    } else {
-        $host_config = {}
-    }
+  if $host != '' {
+      $host_config = {
+        'hostname' => $host,
+      }
+  } else {
+      $host_config = {}
+  }
 
-    if $apm_analyzed_spans {
-        $apm_analyzed_span_config = {
-            'apm_config' => {
-                'analyzed_spans' => $apm_analyzed_spans
-            }
-        }
-    } else {
-        $apm_analyzed_span_config = {}
-    }
+  if $apm_analyzed_spans {
+      $apm_analyzed_span_config = {
+          'apm_config' => {
+              'analyzed_spans' => $apm_analyzed_spans
+          }
+      }
+  else {
+      $apm_analyzed_span_config = {}
+  }
 
-    if $statsd_forward_host != '' {
-        if $_statsd_forward_port != '' {
-            $statsd_forward_config = {
-              'statsd_forward_host' => $statsd_forward_host,
-              'statsd_forward_port' => $statsd_forward_port,
-            }
-        } else {
-            $statsd_forward_config = {
-              'statsd_forward_host' => $statsd_forward_host,
-            }
-        }
-    } else {
-        $statsd_forward_config = {}
-    }
-    $extra_config = deep_merge(
-            $base_extra_config,
-            $agent6_extra_options,
-            $apm_analyzed_span_config,
-            $statsd_forward_config,
-            $host_config)
+  if $statsd_forward_host != '' {
+      if $_statsd_forward_port != '' {
+          $statsd_forward_config = {
+            'statsd_forward_host' => $statsd_forward_host,
+            'statsd_forward_port' => $statsd_forward_port,
+          }
+      } else {
+          $statsd_forward_config = {
+            'statsd_forward_host' => $statsd_forward_host,
+          }
+      }
+  } else {
+      $statsd_forward_config = {}
+  }
+  $extra_config = deep_merge(
+          $base_extra_config,
+          $agent6_extra_options,
+          $apm_analyzed_span_config,
+          $statsd_forward_config,
+          $host_config)
 
     file { $conf6_dir:
       ensure  => directory,
@@ -647,7 +553,7 @@ class datadog_agent(
 
     $agent_config = deep_merge($_agent_config, $extra_config)
 
-    file { '/etc/datadog-agent/datadog.yaml':
+    file { 'C:\ProgramData\Datadog\datadog.yaml':
       owner   => 'dd-agent',
       group   => 'dd-agent',
       mode    => '0640',
