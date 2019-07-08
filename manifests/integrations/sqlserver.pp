@@ -27,17 +27,43 @@
 #}
 #
 class datadog_agent::integrations::sqlserver (
+
   $sqlhostandport = 'LOCALHOST,1433',
   $username       = undef,
   $password       = undef,
-  $tags           = []) inherits datadog_agent::params {
+  $tags           = []
+) inherits datadog_agent::params {
+  
+  include datadog_agent
+  
   validate_string($sqlhostandport)
   validate_array($tags)
 
-  file { "${datadog_agent_windows::params::conf_dir}/sqlserver.d/conf.yaml":
+
+
+
+
+) inherits datadog_agent::params {
+  include datadog_agent
+  
+  $dst_dir = "${datadog_agent::conf6_dir}/sqlserver.d"
+
+  file { $dst_dir:
+      ensure  => directory,
+      owner   => $datadog_agent::params::dd_user,
+      group   => $datadog_agent::params::dd_group,
+      mode    => '0755',
+      require => Package[$datadog_agent::params::package_name],
+      notify  => Service[$datadog_agent::params::service_name]
+  }
+    $dst = "${dst_dir}/conf.yaml"
+  
+
+  file { $dst:
     ensure  => file,
     owner   => $datadog_agent::params::dd_user,
     group   => $datadog_agent::params::dd_group,
+    mode    => '0600',
     content => template('datadog_agent/agent-conf.d/sqlserver.yaml.erb'),
     require => Package[$datadog_agent::params::package_name],
     notify  => Service[$datadog_agent::params::service_name]
