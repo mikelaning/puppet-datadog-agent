@@ -31,8 +31,8 @@ class datadog_agent::integrations::iis ($tags = []) inherits datadog_agent::para
 
   file { "${datadog_agent::params::conf_dir}/iis.yaml":
     ensure  => file,
-    owner   => Administrator,
-    group   => Administrators,
+    owner   => dd-agent,
+    group   => dd-agent,
     content => template('datadog_agent/agent-conf.d/iis.yaml.erb'),
     require => Package[$datadog_agent::params::package_name],
     notify  => Service[$datadog_agent::params::service_name]
