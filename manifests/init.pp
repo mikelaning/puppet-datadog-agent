@@ -561,7 +561,7 @@ class datadog_agent(
       notify  => Service[$datadog_agent::params::service_name],
       require => File['/etc/datadog-agent'],
     }
-  }
+  
 
 
   if $puppet_run_reports {
