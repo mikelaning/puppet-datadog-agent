@@ -450,17 +450,7 @@ class datadog_agent(
     $agent_conf_content = template('datadog_agent/datadog6.yaml.erb')
   }
   
-  file  { 'c:\programdata\Datadog\datadog.yaml':
-    ensure  => file,
-    content => $agent_conf_content,
-    owner   => 'Administrator',
-    group   => 'Administrators',
-    require => Package[$datadog_agent::params::package_name],
-    notify  => Service[$datadog_agent::params::service_name],
-  }
-
-  
-    # lint:ignore:quoted_booleans
+  # lint:ignore:quoted_booleans
   $process_enabled_str = $process_enabled ? { true => 'true' , default => 'disabled' }
   # lint:endignore
   $base_extra_config = {
@@ -553,14 +543,14 @@ class datadog_agent(
 
     $agent_config = deep_merge($_agent_config, $extra_config)
 
-    file { 'C:\ProgramData\Datadog\datadog.yaml':
-      owner   => 'dd-agent',
-      group   => 'dd-agent',
-      mode    => '0640',
-      content => template('datadog_agent/datadog6.yaml.erb'),
-      notify  => Service[$datadog_agent::params::service_name],
-      require => File['C:\ProgramData\Datadog'],
-    }
+  file  { 'c:\programdata\Datadog\datadog.yaml':
+    ensure  => file,
+    content => template('datadog_agent/datadog6.yaml.erb'),
+    owner   => 'Administrator',
+    group   => 'Administrators',
+    require => Package[$datadog_agent::params::package_name],
+    notify  => Service[$datadog_agent::params::service_name],
+  }
   
 
 
