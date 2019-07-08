@@ -15,8 +15,8 @@ class datadog_agent::params {
   $agent5_enable                  = false
   $conf_dir                       = 'c:\programdata\Datadog\conf.d'
   $conf6_dir                      = 'c:\programdata\Datadog\conf.d'
-  $dd_user                        = 'dd-agent'
-  $dd_group                       = 'root'
+  $dd_user                        = 'ddagentuser'
+  $dd_group                       = 'Administrators'
   $dd_groups                      = undef
   $package_name                   = 'datadog-agent'
   $service_name                   = 'DatadogAgent'
