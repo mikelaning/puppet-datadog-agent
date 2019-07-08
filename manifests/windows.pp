@@ -1,5 +1,5 @@
 class datadog_agent::windows (
-  $baseurl = "https://s3.amazonaws.com/ddagent-windows-stable/ddagent-cli-${datadog_agent::agentversion}.msi") {
+  $baseurl = "https://s3.amazonaws.com/ddagent-windows-stable/ddagent-cli-${datadog_agent::agent_version}.msi") {
   validate_string($baseurl)
 
   file { 'c:\datadoginstaller':
@@ -10,15 +10,15 @@ class datadog_agent::windows (
   }
 
   exec { 'getdatadog-installer':
-    command  => "invoke-webrequest $baseurl -outfile c:/datadoginstaller/ddagent-cli-${datadog_agent::agentversion}.msi",
-    onlyif   => "if ((test-path c:/datadoginstaller/ddagent-cli-${datadog_agent::agentversion}.msi) -eq \$true) {exit 1}",
+    command  => "invoke-webrequest $baseurl -outfile c:/datadoginstaller/ddagent-cli-${datadog_agent::agent_version}.msi",
+    onlyif   => "if ((test-path c:/datadoginstaller/ddagent-cli-${datadog_agent::agent_version}.msi) -eq \$true) {exit 1}",
     provider => powershell,
     notify   => Package['datadog-agent'],
   }
 
   package { 'datadog-agent':
-    ensure          => "${datadog_agent::agentversion}.0",
-    source          => "C:/datadoginstaller/ddagent-cli-${datadog_agent::agentversion}.msi",
+    ensure          => "${datadog_agent::agent_version}.0",
+    source          => "C:/datadoginstaller/ddagent-cli-${datadog_agent::agent_version}.msi",
     install_options => [{
         'APIKEY' => "${datadog_agent::api_key}",
       }
