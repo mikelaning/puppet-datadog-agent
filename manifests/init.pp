@@ -559,7 +559,7 @@ class datadog_agent(
       mode    => '0640',
       content => template('datadog_agent/datadog6.yaml.erb'),
       notify  => Service[$datadog_agent::params::service_name],
-      require => File['/etc/datadog-agent'],
+      require => File['C:\ProgramData\Datadog\'],
     }
   
 
