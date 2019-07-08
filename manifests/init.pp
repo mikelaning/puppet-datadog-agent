@@ -494,7 +494,7 @@ class datadog_agent(
               'analyzed_spans' => $apm_analyzed_spans
           }
       }
-  else {
+  } else {
       $apm_analyzed_span_config = {}
   }
 
