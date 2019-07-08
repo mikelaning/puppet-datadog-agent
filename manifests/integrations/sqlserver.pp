@@ -34,7 +34,7 @@ class datadog_agent::integrations::sqlserver (
   validate_string($sqlhostandport)
   validate_array($tags)
 
-  file { "${datadog_agent_windows::params::conf_dir}/sqlserver.yaml":
+  file { "${datadog_agent_windows::params::conf_dir}/sqlserver.d/conf.yaml":
     ensure  => file,
     owner   => $datadog_agent::params::dd_user,
     group   => $datadog_agent::params::dd_group,
