@@ -40,11 +40,6 @@ class datadog_agent::integrations::sqlserver (
   validate_array($tags)
 
 
-
-
-
-) inherits datadog_agent::params {
-  include datadog_agent
   
   $dst_dir = "${datadog_agent::conf6_dir}/sqlserver.d"
 
