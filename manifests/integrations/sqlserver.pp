@@ -16,11 +16,11 @@
 #
 # Sample Usage:
 #
-# include 'datadog_agent_windows::integrations::sqlserver'
+# include 'datadog_agent::integrations::sqlserver'
 #
 # OR
 #
-# class { 'datadog_agent_windows::integrations::sqlserver':
+# class { 'datadog_agent::integrations::sqlserver':
 #   url      => 'LOCALHOST,1433',
 #   username => 'status',
 #   password => 'hunter1',
