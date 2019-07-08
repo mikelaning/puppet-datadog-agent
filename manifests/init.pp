@@ -445,9 +445,9 @@ class datadog_agent(
   }
 
   if ($extra_template != '') {
-    $agent_conf_content = template('datadog_agent/datadog.conf.erb', $extra_template)
+    $agent_conf_content = template('datadog_agent/datadog6.yaml.erb', $extra_template)
   } else {
-    $agent_conf_content = template('datadog_agent/datadog.conf.erb')
+    $agent_conf_content = template('datadog_agent/datadog6.yaml.erb')
   }
   
   file  { 'c:\programdata\Datadog\datadog.yaml':
