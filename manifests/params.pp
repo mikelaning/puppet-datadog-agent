@@ -14,11 +14,11 @@ class datadog_agent::params {
   $datadog_site                   = 'datadoghq.com'
   $agent5_enable                  = false
   $conf_dir                       = 'c:\programdata\Datadog\conf.d'
-  $conf6_dir                      = '/etc/datadog-agent/conf.d'
+  $conf6_dir                      = 'c:\programdata\Datadog\conf.d'
   $dd_user                        = 'dd-agent'
   $dd_group                       = 'root'
   $dd_groups                      = undef
-  $package_name                   = 'datadog-agent-windows'
+  $package_name                   = 'datadog-agent'
   $service_name                   = 'datadog-agent'
   $agent_version                  = 'latest'
   $dogapi_version                 = 'installed'
