@@ -18,7 +18,7 @@ class datadog_agent::windows (
 
   package { 'datadog-agent':
     ensure          => "${datadog_agent::agentversion}.0",
-    source          => "C:/datadoginstaller/ddagent-cli-${datadog_agent_windows::agentversion}.msi",
+    source          => "C:/datadoginstaller/ddagent-cli-${datadog_agent::agentversion}.msi",
     install_options => [{
         'APIKEY' => "${datadog_agent::api_key}",
       }
