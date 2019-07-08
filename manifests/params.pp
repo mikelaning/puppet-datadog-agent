@@ -19,7 +19,7 @@ class datadog_agent::params {
   $dd_group                       = 'root'
   $dd_groups                      = undef
   $package_name                   = 'datadog-agent'
-  $service_name                   = 'datadog-agent'
+  $service_name                   = 'DatadogAgent'
   $agent_version                  = 'latest'
   $dogapi_version                 = 'installed'
   $gem_provider                   = 'puppetserver_gem'
