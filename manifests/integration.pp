@@ -28,7 +28,7 @@ define datadog_agent::integration (
     group   => $datadog_agent::dd_group,
     #mode    => '0644',
     content => to_instances_yaml($init_config, $instances, $logs),
-    notify  => Service[$datadog_agent::service_name]
+    notify  => Exec[$datadog_agent::params::restart_service]
   }
 
 }
