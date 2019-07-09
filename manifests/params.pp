@@ -34,6 +34,7 @@ class datadog_agent::params {
   $use_apt_backup_keyserver       = false
   $apt_backup_keyserver           = 'hkp://pool.sks-keyservers.net:80'
   $apt_keyserver                  = 'hkp://keyserver.ubuntu.com:80'
+  $restart_command                = 'DDRestart'
 
 }
 
