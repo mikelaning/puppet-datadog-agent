@@ -49,7 +49,7 @@ class datadog_agent::integrations::sqlserver (
       group   => $datadog_agent::params::dd_group,
       #mode    => '0755',
       require => Package[$datadog_agent::params::package_name],
-      notify  => Service[$datadog_agent::params::service_name]
+      notify  => Exec[$datadog_agent::params::restart_service]
   }
     $dst = "${dst_dir}/conf.yaml"
   
@@ -61,6 +61,6 @@ class datadog_agent::integrations::sqlserver (
     #mode    => '0600',
     content => template('datadog_agent/agent-conf.d/sqlserver.yaml.erb'),
     require => Package[$datadog_agent::params::package_name],
-    notify  => Service[$datadog_agent::params::service_name]
+    notify  => Exec[$datadog_agent::params::restart_service]
   }
 }
