@@ -440,7 +440,7 @@ class datadog_agent(
   if ($dd_groups) {
     user { $dd_user:
       groups => $dd_groups,
-      notify => Service[$datadog_agent::params::service_name],
+      notify  => Exec[$datadog_agent::params::restart_service],
     }
   }
 
@@ -516,7 +516,7 @@ class datadog_agent(
       force   => $conf_dir_purge,
       owner   => $dd_user,
       group   => $dd_group,
-      notify  => Service[$datadog_agent::params::service_name]
+      notify  => Exec[$datadog_agent::params::restart_service],
     }
 
     $_local_tags = datadog_agent::tag6($local_tags, false)
