@@ -12,24 +12,21 @@ define datadog_agent::integration (
   validate_legacy(Optional[Array], 'validate_array', $logs)
   validate_legacy(String, 'validate_string', $integration)
 
-  if !$::datadog_agent::agent5_enable {
-    $dst = "${datadog_agent::conf6_dir}/${integration}.d/conf.yaml"
-    file { "${datadog_agent::conf6_dir}/${integration}.d":
-      ensure => directory,
-      owner  => $datadog_agent::dd_user,
-      group  => $datadog_agent::dd_group,
-      mode   => '0755',
-      before => File[$dst]
-    }
-  } else {
-    $dst = "${datadog_agent::conf_dir}/${integration}.yaml"
+  $dst = "${datadog_agent::conf6_dir}/${integration}.d/conf.yaml"
+  file { "${datadog_agent::conf6_dir}/${integration}.d":
+    ensure => directory,
+    owner  => $datadog_agent::dd_user,
+    group  => $datadog_agent::dd_group,
+    #mode   => '0755',
+    before => File[$dst]
   }
+  
 
   file { $dst:
     ensure  => file,
     owner   => $datadog_agent::dd_user,
     group   => $datadog_agent::dd_group,
-    mode    => '0644',
+    #mode    => '0644',
     content => to_instances_yaml($init_config, $instances, $logs),
     notify  => Service[$datadog_agent::service_name]
   }
