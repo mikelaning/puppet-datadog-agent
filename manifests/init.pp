@@ -549,7 +549,7 @@ class datadog_agent(
     owner   => 'Administrator',
     group   => 'Administrators',
     require => Package[$datadog_agent::params::package_name],
-    notify  => Service[$datadog_agent::params::service_name],
+    notify  => Exec[$datadog_agent::params::restart_service],
   }
   
 
