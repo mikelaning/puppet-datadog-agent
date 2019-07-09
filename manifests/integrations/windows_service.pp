@@ -16,25 +16,61 @@
 #
 # Sample Usage:
 #
-# include 'datadog_agent::integrations::sqlserver'
+# include 'datadog_agent::integrations::windows_service'
 #
 # OR
 #
-# class { 'datadog_agent::integrations::sqlserver':
+# class { 'datadog_agent::integrations::windows_service':
 #   url      => 'LOCALHOST,1433',
 #   username => 'status',
 #   password => 'hunter1',
 #}
 #
-class datadog_agent::integrations::windows_service ($services = []) inherits datadog_agent::params {
-  validate_array($services)
+class datadog_agent::integrations::sqlserver (
 
-  file { "${datadog_agent::params::conf_dir}/windows_service.yaml":
-    ensure  => file,
-    owner   => Administrator,
-    group   => Administrators,
-    content => template('datadog_agent/agent-conf.d/windows_service.yaml.erb'),
-    require => Package[$datadog_agent::params::package_name],
-    notify  => Service[$datadog_agent::params::service_name]
+  $sqlhostandport = 'LOCALHOST,1433',
+  $username       = undef,
+  $password       = undef,
+  $tags           = []
+) inherits datadog_agent::params {
+  
+  include datadog_agent
+  
+  validate_string($sqlhostandport)
+  validate_array($tags)
+
+
+
+}
+
+
+class datadog_agent::integrations::windows_service ($services = []) inherits datadog_agent::params {
+ 
+  include datadog_agent
+  
+  validate_array($services)
+  
+  $dst_dir = "${datadog_agent::conf6_dir}/windows_service.d"
+
+  file { $dst_dir:
+      ensure  => directory,
+      owner   => $datadog_agent::params::dd_user,
+      group   => $datadog_agent::params::dd_group,
+      #mode    => '0755',
+      require => Package[$datadog_agent::params::package_name],
+      notify  => Service[$datadog_agent::params::service_name]
   }
+  $dst = "${dst_dir}/conf.yaml"
+
+    
+
+  file { $dst:
+      ensure  => file,
+      owner   => $datadog_agent::params::dd_user,
+      group   => $datadog_agent::params::dd_group,
+      #mode    => '0600',
+      content => template('datadog_agent/agent-conf.d/windows_service.yaml.erb'),
+      require => Package[$datadog_agent::params::package_name],
+      notify  => Service[$datadog_agent::params::service_name]
+  } 
 }
