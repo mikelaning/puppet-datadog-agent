@@ -26,23 +26,6 @@
 #   password => 'hunter1',
 #}
 #
-class datadog_agent::integrations::sqlserver (
-
-  $sqlhostandport = 'LOCALHOST,1433',
-  $username       = undef,
-  $password       = undef,
-  $tags           = []
-) inherits datadog_agent::params {
-  
-  include datadog_agent
-  
-  validate_string($sqlhostandport)
-  validate_array($tags)
-
-
-
-}
-
 
 class datadog_agent::integrations::windows_service ($services = []) inherits datadog_agent::params {
  
