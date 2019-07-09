@@ -1,4 +1,4 @@
-# Class: datadog_agent_windows::integrations::iis
+# Class: datadog_agent::integrations::iis
 #
 # This class will install the necessary configuration for the iis integration
 #
@@ -18,21 +18,27 @@
 #
 # include 'datadog_agent_windows::integrations::iis'
 #
-# OR
-#
-# class { 'datadog_agent::integrations::iis':
-#   url      => 'http://example.com/server-status?auto',
-#   username => 'status',
-#   password => 'hunter1',
-#}
-#
+
 class datadog_agent::integrations::iis ($tags = []) inherits datadog_agent::params {
   validate_array($tags)
 
-  file { "${datadog_agent::params::conf_dir}/iis.yaml":
+  $dst_dir = "${datadog_agent::conf6_dir}/iis.d"
+
+  file { $dst_dir:
+      ensure  => directory,
+      owner   => $datadog_agent::params::dd_user,
+      group   => $datadog_agent::params::dd_group,
+      #mode    => '0755',
+      require => Package[$datadog_agent::params::package_name],
+      notify  => Service[$datadog_agent::params::service_name]
+  }
+  $dst = "${dst_dir}/conf.yaml"
+  
+  file { $dst:
     ensure  => file,
     owner   => $datadog_agent::params::dd_user,
-    group   => $datadog_agent::params::dd_group
+    group   => $datadog_agent::params::dd_group,
+    #mode    => '0600',
     content => template('datadog_agent/agent-conf.d/iis.yaml.erb'),
     require => Package[$datadog_agent::params::package_name],
     notify  => Service[$datadog_agent::params::service_name]
