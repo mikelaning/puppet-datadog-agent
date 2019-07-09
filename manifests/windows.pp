@@ -26,7 +26,6 @@ class datadog_agent::windows (
   }
   exec { 'DDRestart':
     command  => "& 'C:\Program Files\Datadog\Datadog Agent\embedded\agent.exe' restart-service",
-    onlyif   => "if ((test-path c:/datadoginstaller/ddagent-cli-${datadog_agent::agent_version}.msi) -eq \$true) {exit 1}",
     provider => powershell,
     notify   => Package['datadog-agent'],
   }
