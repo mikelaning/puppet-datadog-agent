@@ -1,6 +1,6 @@
 class datadog_agent::windows (
   $baseurl = "https://s3.amazonaws.com/ddagent-windows-stable/ddagent-cli-${datadog_agent::agent_version}.msi") {
-  validate_string($baseurl)
+  validate_legacy('String', 'validate_string', $baseurl)
 
   file { 'c:\datadoginstaller':
     ensure => directory,
