@@ -27,7 +27,6 @@ class datadog_agent::windows (
   exec { 'DDRestart':
     command  => "& 'C:\Program Files\Datadog\Datadog Agent\embedded\agent.exe' restart-service",
     provider => powershell,
-    notify   => Package['datadog-agent'],
   }
   
   service { 'DatadogAgent':
