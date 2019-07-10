@@ -26,13 +26,16 @@
 #   password => 'hunter1',
 #}
 #
-class datadog_agent::integrations::win32_event_log ($types = [], $log_files = [], $tags = []) inherits 
-datadog_agent::params {
+class datadog_agent::integrations::win32_event_log (
+  Array $types = [], 
+  Array $log_files = [], 
+  Array $tags = []
+) inherits datadog_agent::params {
   include datadog_agent
   
-  validate_array($types)
-  validate_array($log_files)
-  validate_array($tags)
+  validate_legacy('Array', 'validate_array', $types)
+  validate_legacy('Array', 'validate_array', $tags)
+  validate_legacy('Array', 'validate_array', $log_files)
   
   $dst_dir = "${datadog_agent::conf6_dir}/win32_event_log.d"
 
