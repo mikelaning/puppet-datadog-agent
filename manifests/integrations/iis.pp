@@ -19,11 +19,12 @@
 # include 'datadog_agent_windows::integrations::iis'
 #
 
-class datadog_agent::integrations::iis ($tags = []) inherits datadog_agent::params {
-
+class datadog_agent::integrations::iis (
+  Array $tags = []
+) inherits datadog_agent::params {
   include datadog_agent
   
-  validate_array($tags)
+  validate_legacy('Array', 'validate_array', $tags)
 
   $dst_dir = "${datadog_agent::conf6_dir}/iis.d"
 
