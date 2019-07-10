@@ -27,11 +27,12 @@
 #}
 #
 
-class datadog_agent::integrations::windows_service ($services = []) inherits datadog_agent::params {
- 
+class datadog_agent::integrations::windows_service (
+  Array $services = []
+) inherits datadog_agent::params {
   include datadog_agent
   
-  validate_array($services)
+  validate_legacy('Array', 'validate_array', $services)
   
   $dst_dir = "${datadog_agent::conf6_dir}/windows_service.d"
 
