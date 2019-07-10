@@ -28,16 +28,35 @@
 #
 class datadog_agent::integrations::win32_event_log ($types = [], $log_files = [], $tags = []) inherits 
 datadog_agent::params {
+  include datadog_agent
+  
   validate_array($types)
   validate_array($log_files)
   validate_array($tags)
+  
+  $dst_dir = "${datadog_agent::conf6_dir}/win32_event_log.d"
 
-  file { "${datadog_agent::params::conf_dir}/win32_event_log.yaml":
-    ensure  => file,
-    owner   => Administrator,
-    group   => Administrators,
-    content => template('datadog_agent/agent-conf.d/win32_event_log.yaml.erb'),
-    require => Package[$datadog_agent::params::package_name],
-    notify  => Service[$datadog_agent::params::service_name]
+  file { $dst_dir:
+      ensure  => directory,
+      owner   => $datadog_agent::params::dd_user,
+      group   => $datadog_agent::params::dd_group,
+      #mode    => '0755',
+      require => Package[$datadog_agent::params::package_name],
+      notify  => Exec[$datadog_agent::params::restart_service]
   }
+  $dst = "${dst_dir}/conf.yaml"
+
+    
+
+  file { $dst:
+      ensure  => file,
+      owner   => $datadog_agent::params::dd_user,
+      group   => $datadog_agent::params::dd_group,
+      #mode    => '0600',
+      content => template('datadog_agent/agent-conf.d/win32_event_log.yaml.erb'),
+      require => Package[$datadog_agent::params::package_name],
+      notify  => Exec[$datadog_agent::params::restart_service]
+  } 
 }
+  
+
