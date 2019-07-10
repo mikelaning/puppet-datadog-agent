@@ -1,5 +1,5 @@
 
-class datadog_agent::integrations::smi inherits datadog_agent::params {
+class datadog_agent::integrations::wmi inherits datadog_agent::params {
   include datadog_agent
 
   $dst_dir = "${datadog_agent::conf6_dir}/wmi.d"
