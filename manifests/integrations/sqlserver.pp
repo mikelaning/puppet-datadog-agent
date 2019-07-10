@@ -28,16 +28,16 @@
 #
 class datadog_agent::integrations::sqlserver (
 
-  $sqlhostandport = 'LOCALHOST,1433',
-  $username       = undef,
-  $password       = undef,
-  $tags           = []
+  
+  String $sqlhostandport      = 'LOCALHOST,1433',
+  Optional[String] $username  = 'ddagentuser',
+  Optional[String] $password  = undef,
+  Array $tags           = []
 ) inherits datadog_agent::params {
   
   include datadog_agent
-  
-  validate_string($sqlhostandport)
-  validate_array($tags)
+  validate_legacy('String', 'validate_string', $sqlhostandport)
+  validate_legacy('Array', 'validate_array', $tags)
 
 
   
