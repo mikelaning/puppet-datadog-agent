@@ -309,8 +309,6 @@ class datadog_agent(
   $logs_enabled = $datadog_agent::params::logs_enabled,
   $container_collect_all = $datadog_agent::params::container_collect_all,
   Hash[String[1], Data] $agent6_extra_options = {},
-  $agent5_repo_uri = $datadog_agent::params::agent5_default_repo,
-  $agent6_repo_uri = $datadog_agent::params::agent6_default_repo,
   Optional[Boolean] $use_apt_backup_keyserver = $datadog_agent::params::use_apt_backup_keyserver,
   $apt_backup_keyserver = $datadog_agent::params::apt_backup_keyserver,
   $apt_keyserver = $datadog_agent::params::apt_keyserver,
@@ -395,8 +393,6 @@ class datadog_agent(
   validate_legacy(Array, 'validate_array', $custom_sensitive_words)
   validate_legacy(Boolean, 'validate_bool', $logs_enabled)
   validate_legacy(Boolean, 'validate_bool', $container_collect_all)
-  validate_legacy(String, 'validate_string', $agent5_repo_uri)
-  validate_legacy(String, 'validate_string', $agent6_repo_uri)
   validate_legacy(String, 'validate_string', $apt_release)
   validate_legacy(Integer, 'validate_integer', $cmd_port)
 
