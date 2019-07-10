@@ -93,7 +93,7 @@ class datadog_agent::integrations::redis(
       ensure  => directory,
       owner   => $datadog_agent::params::dd_user,
       group   => $datadog_agent::params::dd_group,
-      mode    => '0755',
+      #mode    => '0755',
       require => Package[$datadog_agent::params::package_name],
       notify  => Exec[$datadog_agent::params::restart_service]    }
     $dst = "${dst_dir}/conf.yaml"
