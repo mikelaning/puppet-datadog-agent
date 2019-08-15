@@ -1,9 +1,14 @@
 Puppet & Datadog - Forked for Windows
 ================
 
-This puppet module is not in the forge. Since its not in the forge, you will have to manually put that repo into a datadog_agent module, and manually `puppet module install` the 6 dependencies in metadata.json: https://github.com/mikelaning/puppet-datadog-agent/blob/master/metadata.json
+This puppet module is not in the forge. Since its not in the forge, you will have to manually put this repo into a datadog_agent module, and manually `puppet module install` the 6 dependencies in metadata.json: https://github.com/mikelaning/puppet-datadog-agent/blob/master/metadata.json
 
-Currently, it is set up with sqlserver, redis, iis, to windows_service, and wmi_check integrations to work successfully.
+Currently, it is set up with the following integrations:
+- [sqlserver](https://docs.datadoghq.com/integrations/sqlserver/)
+- [redis](https://docs.datadoghq.com/integrations/redisdb/)
+- [iis](https://docs.datadoghq.com/integrations/iis/)
+- [windows_service](https://docs.datadoghq.com/integrations/windows_service/)
+- [wmi_check](https://docs.datadoghq.com/integrations/wmi_check/#pagetitle)
 
 Here is an example manifest used that confirms successful installation and configuration:
 
